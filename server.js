@@ -1,4 +1,4 @@
-const express = require('express'); 
+const express = require('express');
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
 
@@ -7,7 +7,7 @@ const userRoutes = require('./routes/userRoutes');
 const app = express();
 const PORT = 3000;
 
-// Swagger definition configuration
+// Swagger configuration
 const swaggerOptions = {
   definition: {
     openapi: '3.0.0',
@@ -27,42 +27,49 @@ const swaggerOptions = {
           type: 'object',
           properties: {
             firstName: {
-              type: 'string'
+              type: 'string',
             },
             lastName: {
-              type: 'string'
+              type: 'string',
             },
             email: {
               type: 'string',
-              format: 'email'
-            }
+              format: 'email',
+            },
           },
-          required: ['firstName', 'lastName', 'email']
-        }
-      }
-    }
+          required: ['firstName', 'lastName', 'email'],
+        },
+      },
+    },
   },
-  // Path to the API docs (files containing @swagger annotations)
-  apis: ['./server.js', './routes/*.js'], 
+
+  apis: ['./server.js', './routes/*.js'],
 };
 
-// Initialize swagger-jsdoc
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
-// Serve Swagger UI at /api-docs endpoint
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
-app.get("/",(req,res, next)=>{
-  res.write('<h1>Welcome to the User Management System</h1>');
-  res.send();
-})
-//add routers
-app.use(userRoutes);
-
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+app.get('/', (req, res) => {
+  res.send('<h1>Welcome to the User Management System</h1>');
 });
+
+// User routes
+app.use('/user', userRoutes);
+
+async function startServer() {
+  try {
+
+    app.listen(PORT, () => {
+      console.log(`Server running on http://localhost:${PORT}`);
+    });
+  } catch (error) {
+    console.error('Application failed to start:', error);
+    process.exit(1);
+  }
+}
+
+startServer();

@@ -1,8 +1,10 @@
+name: Node.js CI/CD
 on:
   push:
     branches:
       - main
-    
+    pull_request:
+      branches: [ "main" ]
 
 jobs:
   build:
@@ -10,7 +12,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js 22.x
+
+      - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 22.x
-      - run: docker compose -f compose.yml up -d --build
+          host: ${{secrets.HOST}}
+          username: ${{secrets.USERNAME}}
+          # password: ${{secrets.PASSWORD}}
+          kays: ${{secrets.SSH_KEY}}
+          script: |
+            cd /home/vishnu/nodejsapp
+            git pull origin main
+            docker compose up -d --build

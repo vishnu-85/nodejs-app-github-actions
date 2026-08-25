@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 
-const { db } = require('../mongodb/db');
+const { db } = require('../mongodb/db-config');
 const swaggerJSDoc = require('swagger-jsdoc');
 
 /**
@@ -22,13 +22,21 @@ router.get('/getUsers', async (req, res) => {
       res.status(200).json(users);
       return;
     }
-    const users = await db.collection('user').find().sort({ firstName: 1 }).toArray();
+    const users = await db.collection('user').find().sort({ firstName: 1 }).limit(10).toArray();
     res.status(200).json(users);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching users', error: error.message });
   }
 })
  
+router.get('/health', async (req, res) => {
+  try {
+    res.status(200).json({ message: 'Server is healthy' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching users', error: error.message });
+  }
+})
+
 /**
  * @swagger
  * /user:

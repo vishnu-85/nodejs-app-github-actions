@@ -1,11 +1,4 @@
 services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    restart: unless-stopped
-    ports: 
-      - "3000:3000"
   mongo:
     image: mongo
     ports:
@@ -24,3 +17,10 @@ services:
       ME_CONFIG_BASICAUTH_USERNAME: admin
       ME_CONFIG_BASICAUTH_PASSWORD: qwerty
       ME_CONFIG_MONGODB_URL: mongodb://admin:qwerty@mongo:27017/
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports: 
+      - "3000:3000"

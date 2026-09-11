@@ -3,7 +3,8 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
 
 const userRoutes = require('./routes/userRoutes');
-
+const loginRoutes = require('./routes/loginRouter')
+const cors = require('cors');
 const app = express();
 const PORT = 3000;
 
@@ -50,15 +51,24 @@ const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
+
+app.use(cors({
+  origin: 'http://localhost:4200',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization','jwt_token']
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+
 app.get('/', (req, res) => {
-  res.send('<h1>Welcome to the User Management System</h1>');
+  res.status(200).json({ message: 'GET request received' });
 });
 
 // User routes
-app.use('/user', userRoutes);
+app.use('', userRoutes);
+app.use('',loginRoutes);
 
 async function startServer() {
   try {
